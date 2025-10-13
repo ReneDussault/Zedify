@@ -22,13 +22,13 @@
         }
     ],
     "icons": {
-        "48": "../icons/icon48.png",
-        "96": "../icons/icon96.png"
+        "48": "icon48.png",
+        "96": "icon96.png"
     },
     "browser_specific_settings": {
         "gecko": {
             "id": "zedify@zed.dev",
-            "strict_min_version": "57.0"
+            "strict_min_version": "58.0"
         }
     }
 }
