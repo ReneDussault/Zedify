@@ -8,27 +8,28 @@ Zedify adds a large, precise volume slider to YouTube video pages. The slider pr
 
 Features:
 
-- Large volume slider (up to 400px wide) placed next to YouTube's native controls
+- Large volume slider (up to 400px wide) that replace YouTube's native controls
 - Mouse wheel support: 5% steps (normal), 1% steps (with Shift)
 - Keyboard arrow keys for 1% adjustments
 - Volume percentage HUD display
-- Auto-mute at 0% volume
-- Syncs with YouTube's native controls and keyboard shortcuts
+- Auto-mute at 0% volume (needs to be fixed)
 - Works in normal, theater, and fullscreen modes
 
 ## Installation
 ### Firefore Addon Store
 
-https://addons.mozilla.org/en-US/firefox/addon/zedify/
+This is the "permanent" way to install the addon.
+https://addons.mozilla.org/en-US/firefox/addon/zedify/ (waiting approval)
 
 ### Firefox
 
-1. Open Firefox and navigate to `about:debugging`
-2. Click "This Firefox" in the left sidebar
-3. Click "Load Temporary Add-on..."
-4. Navigate to the `src` folder and select `manifest.json`
+1. Download the ZIP in the release section (right pane of this page)
+2. Open Firefox and navigate to `about:debugging`
+3. Click "This Firefox" in the left sidebar
+4. Click "Load Temporary Add-on..."
+5. Navigate to your download folder and open the Zedify-{version}.zip file
 
-The extension will now be active on all YouTube pages.
+The extension will now be active on all YouTube pages. (temporary, until next reload)
 
 ### Building from Source
 
@@ -81,4 +82,5 @@ const config = {
 ## License
 
 MIT License - see LICENSE file for details.
+
 
