@@ -71,17 +71,10 @@ const config = {
 };
 ```
 
-## Technical Details
-
-- Manifest V2 for Firefox compatibility
-- Runs at document_end and handles YouTube SPA navigation
-- Uses mutation observers to detect DOM changes
-- Captures events before YouTube's handlers for reliable control
-- No external dependencies
-
 ## License
 
 MIT License - see LICENSE file for details.
+
 
 
 
