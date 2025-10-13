@@ -136,47 +136,42 @@
         let dragging = false;
         let lastNonZero = initVol > 0 ? initVol : (sliderEl._lastNonZeroVolume || 0.5);
 
-        const setVolume = (newVol) => {
-            const { p: yt, api } = getYT();
-            newVol = clamp01(newVol);
-            
-            if (api) {
-                const wasMuted = yt.isMuted();
-                
-                // Always unmute when adjusting volume via slider (like youtube-wide-volume-slider does)
-                if (wasMuted) {
-                    yt.unMute();
-                }
-                
-                // Set the volume
-                yt.setVolume(Math.round(newVol * 100));
-                
-                if (newVol > 0) {
-                    lastNonZero = newVol;
-                }
-                
-                // Update visuals after volume change
-                const finalMuted = yt.isMuted();
-                const finalVol = clamp01((yt.getVolume() || 0) / 100);
-                updateSliderVisuals(sliderEl, finalVol, finalMuted);
-                showHud(player, finalMuted ? 0 : finalVol);
-            } else {
-                // Fallback for direct video element
-                const wasMuted = video.muted;
-                
-                if (wasMuted) {
-                    video.muted = false;
-                }
-                
-                video.volume = newVol;
-                
-                if (newVol > 0) {
-                    lastNonZero = newVol;
-                }
-                
-                updateSliderVisuals(sliderEl, newVol, video.muted);
-                showHud(player, video.muted ? 0 : newVol);
+        // Helper function to click YouTube's mute button to update icon
+        const toggleMuteIcon = () => {
+            const muteBtn = player.querySelector('.ytp-mute-button');
+            if (muteBtn) {
+                muteBtn.click();
             }
+        };
+
+        const setVolume = (newVol) => {
+            newVol = clamp01(newVol);
+            const wasMuted = video.muted;
+            
+            // If we're muted and trying to set to 0% or lower, do nothing
+            if (wasMuted && newVol === 0) {
+                return;
+            }
+            
+            if (newVol <= 0 && !wasMuted) {
+                video.volume = 0;
+                video.muted = true;
+                toggleMuteIcon();
+            } else if (newVol > 0 && wasMuted) {
+                video.volume = newVol;
+                toggleMuteIcon();
+                lastNonZero = newVol;
+            } else {
+                video.volume = newVol;
+                if (newVol > 0) {
+                    lastNonZero = newVol;
+                }
+            }
+            
+            setTimeout(() => {
+                updateSliderVisuals(sliderEl, video.volume, video.muted);
+                showHud(player, video.muted ? 0 : video.volume);
+            }, 50);
             
             sliderEl._lastNonZeroVolume = lastNonZero;
         };
@@ -249,8 +244,8 @@
             }
             
             const step = e.shiftKey ? config.shiftWheelStep : config.wheelStep;
-            const { p: yt, api } = getYT();
-            const baseVol = api ? clamp01((yt.getVolume() || 0) / 100) : video.volume;
+            const isMuted = video.muted;
+            const baseVol = video.volume;
             let delta = e.deltaY;
             
             let v;
@@ -262,6 +257,12 @@
             
             v = clamp01(v);
             v = Math.round(v / config.stepSize) * config.stepSize;
+            
+            // If muted at 0% and trying to go to 0%, do nothing
+            if (isMuted && v === 0) {
+                return false;
+            }
+            
             setVolume(v);
             
             // Set timeout to clear state after scrolling stops
@@ -310,22 +311,17 @@
             let handled = false;
             let step;
             
-            if (key === 'ArrowLeft' || key === 'ArrowDown') {
+            if (key === 'ArrowDown') {
                 // Always use 1% for arrows
                 step = config.stepSize;
                 v = v - step;
                 handled = true;
-            } else if (key === 'ArrowRight' || key === 'ArrowUp') {
+            } else if (key === 'ArrowUp') {
                 // Always use 1% for arrows
                 step = config.stepSize;
                 v = v + step;
                 handled = true;
-            } else if (key === 'Home') {
-                v = 0;
-                handled = true;
-            } else if (key === 'End') {
-                v = 1;
-                handled = true;
+
             } else if (key === ' ' || key === 'Enter') {
                 e.preventDefault();
                 return;
@@ -354,8 +350,8 @@
             );
             
             if (!isInputField && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
-                const { p: yt, api } = getYT();
-                let v = api ? clamp01((yt.getVolume() || 0) / 100) : video.volume;
+                const isMuted = video.muted;
+                let v = video.volume;
                 const step = config.stepSize;
                 
                 if (e.key === 'ArrowDown') {
@@ -364,17 +360,26 @@
                     v = v + step;
                 }
                 
+                // Clamp the new volume
+                v = clamp01(v);
+                v = Math.round(v / config.stepSize) * config.stepSize;
+                
+                // If muted and trying to go to 0% or if already at 0% and going down, do nothing
+                if (isMuted && (v === 0 || (video.volume === 0 && e.key === 'ArrowDown'))) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    return false;
+                }
+                
                 e.preventDefault();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
-                v = clamp01(v);
-                v = Math.round(v / config.stepSize) * config.stepSize;
                 setVolume(v);
                 
                 // Show HUD for keyboard volume changes
-                const { p: yt2, api: api2 } = getYT();
-                const currentVol = api2 ? clamp01((yt2.getVolume() || 0) / 100) : video.volume;
-                const currentMuted = api2 ? yt2.isMuted() : video.muted;
+                const currentVol = video.volume;
+                const currentMuted = video.muted;
                 showHud(player, currentMuted ? 0 : currentVol);
                 
                 return false;
