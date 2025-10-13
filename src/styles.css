@@ -1,0 +1,130 @@
+/* ZedTube Volume - Enhanced Slider */
+.ztv-enhanced-slider {
+    --ztv-width: 400px; /* responsive default */
+    --ztv-height: 12px;
+    --ztv-knob: 16px;
+
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    margin-left: 8px;
+    user-select: none;
+    flex: 0 0 auto; /* don't shrink */
+    max-width: min(400px, 40vw); /* responsive max width */
+    z-index: 1002; /* higher than control chrome */
+    pointer-events: auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.ztv-track {
+    position: relative;
+    width: var(--ztv-width);
+    height: var(--ztv-height);
+    border-radius: calc(var(--ztv-height) / 2);
+    background: rgba(255,255,255,0.25);
+    overflow: hidden;
+    cursor: pointer;
+    pointer-events: auto !important;
+    transition: background 120ms ease;
+}
+
+.ztv-track:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+.ztv-track:active {
+    background: rgba(255,255,255,0.4);
+}
+
+.ztv-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0%;
+    background: #f00;
+    transition: width 80ms linear;
+    pointer-events: none;
+}
+
+.ztv-knob {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: var(--ztv-knob);
+    height: var(--ztv-knob);
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    transition: box-shadow 120ms ease, transform 120ms ease;
+    pointer-events: auto !important;
+    cursor: grab;
+}
+
+.ztv-knob:active {
+    cursor: grabbing;
+    transform: translate(-50%, -50%) scale(1.15);
+}
+
+.ztv-track:hover .ztv-knob {
+    box-shadow: 0 3px 8px rgba(0,0,0,0.45);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Make volume panel grow to fit the slider without breaking YT layout */
+.ytp-volume-panel { width: auto !important; }
+
+/* Let left controls accommodate the extra slider without squishing */
+.ytp-left-controls {
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow: visible; /* allow our slider to extend */
+    z-index: 1001;
+}
+
+/* On narrow players, allow the slider to shrink rather than overflow */
+.ytp-chrome-bottom .ztv-enhanced-slider { max-width: min(400px, 35vw); }
+.ytp-chrome-bottom .ztv-track { width: min(var(--ztv-width), min(400px, 35vw)); }
+
+/* Volume HUD (small floating number) */
+.ztv-volume-hud {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) scale(0.9) !important;
+    padding: 12px 20px !important;
+    border-radius: 10px !important;
+    background: rgba(28, 28, 28, 0.95) !important;
+    color: #fff !important;
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    opacity: 0 !important;
+    transition: opacity 150ms ease, transform 150ms ease !important;
+    pointer-events: none !important;
+    z-index: 99999 !important;
+    font-family: 'YouTube Sans', 'Roboto', Arial, sans-serif !important;
+    display: none !important;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.7) !important;
+    letter-spacing: 0.5px !important;
+    min-width: 80px !important;
+    text-align: center !important;
+}
+
+.ztv-volume-hud.show {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    display: block !important;
+}
+
+/* Fullscreen adjustments */
+.ytp-fullscreen .ztv-volume-hud {
+    font-size: 48px !important;
+    padding: 16px 28px !important;
+    min-width: 120px !important;
+}
+
+/* Muted visual: dim fill/knob */
+.ztv-enhanced-slider.muted .ztv-fill { background: rgba(255,0,0,0.35); }
+.ztv-enhanced-slider.muted .ztv-knob { background: #ddd; }
