@@ -18,7 +18,7 @@ Features:
 ## Installation
 ### Firefore Addon Store
 
-This is the "permanent" way to install the addon.
+This is the "permanent" way to install the addon.  
 https://addons.mozilla.org/en-US/firefox/addon/zedify/ (waiting approval)
 
 ### Firefox
@@ -82,5 +82,6 @@ const config = {
 ## License
 
 MIT License - see LICENSE file for details.
+
 
 
