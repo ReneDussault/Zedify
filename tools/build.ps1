@@ -40,7 +40,7 @@ if ($missingFiles.Count -gt 0) {
 }
 
 # Create the zip package
-$version = "1.0.0"
+$version = "1.0.1"
 $zipPath = Join-Path $buildDir "zedify-$version.zip"
 
 # Remove existing zip if it exists
