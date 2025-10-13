@@ -1,6 +1,6 @@
-# ZedTube Volume Firefox Extension Build Script
+# Zedify Firefox Extension Build Script
 
-Write-Host "Building ZedTube Volume Firefox Extension..." -ForegroundColor Green
+Write-Host "Building Zedify Firefox Extension..." -ForegroundColor Green
 Write-Host ""
 
 # Get the project root (parent of tools directory)

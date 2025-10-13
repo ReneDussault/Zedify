@@ -1,6 +1,6 @@
 {
-    "manifest_version": 2,
-    "name": "ZedTube Volume",
+    "manifest_version": 3,
+    "name": "Zedify",
     "version": "1.0.0",
     "description": "Enhanced YouTube volume control with a larger slider, finer adjustments, and intuitive keyboard/mouse controls",
     "permissions": [
@@ -25,9 +25,9 @@
         "48": "../icons/icon48.png",
         "96": "../icons/icon96.png"
     },
-    "applications": {
+    "browser_specific_settings": {
         "gecko": {
-            "id": "zedtube-volume@zed.dev",
+            "id": "zedify@zed.dev",
             "strict_min_version": "57.0"
         }
     }

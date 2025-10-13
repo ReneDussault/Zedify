@@ -96,33 +96,6 @@
         knob.setAttribute('aria-valuetext', muted ? 'Muted' : pct(disp) + '%');
         sliderEl.classList.toggle('muted', !!muted);
     }
-    
-    function updateMuteButtonIcon(volume, muted) {
-        const player = findPlayer();
-        if (!player) return;
-        
-        const muteBtn = player.querySelector('.ytp-mute-button');
-        if (!muteBtn) return;
-        
-        const shouldShowMuted = muted || volume === 0;
-        
-        // Update aria attributes
-        if (shouldShowMuted) {
-            muteBtn.setAttribute('aria-label', 'Unmute (m)');
-            muteBtn.setAttribute('title', 'Unmute (m)');
-        } else {
-            muteBtn.setAttribute('aria-label', 'Mute (m)');
-            muteBtn.setAttribute('title', 'Mute (m)');
-        }
-        
-        // Force YouTube to update the icon by triggering its internal state check
-        // YouTube uses data attributes and classes to manage icon state
-        if (shouldShowMuted) {
-            muteBtn.classList.add('ytp-mute-button-muted');
-        } else {
-            muteBtn.classList.remove('ytp-mute-button-muted');
-        }
-    }
 
     function attachEnhancedSlider() {
     const player = findPlayer();
@@ -167,33 +140,44 @@
             const { p: yt, api } = getYT();
             newVol = clamp01(newVol);
             
-            // Mute when volume reaches 0, unmute when raising volume
-            if (newVol === 0) {
-                if (api) {
-                    yt.mute();
-                } else {
-                    video.muted = true;
-                }
-            } else if (newVol > 0) {
-                if (api ? yt.isMuted() : video.muted) {
-                    if (api) yt.unMute(); else video.muted = false;
-                }
-                lastNonZero = newVol;
-            }
-            
             if (api) {
+                const wasMuted = yt.isMuted();
+                
+                // Always unmute when adjusting volume via slider (like youtube-wide-volume-slider does)
+                if (wasMuted) {
+                    yt.unMute();
+                }
+                
+                // Set the volume
                 yt.setVolume(Math.round(newVol * 100));
-                const currentMuted = yt.isMuted();
-                updateSliderVisuals(sliderEl, newVol, currentMuted);
-                updateMuteButtonIcon(newVol, currentMuted);
-                // Show correct volume in HUD (0 if muted)
-                showHud(player, currentMuted ? 0 : newVol);
+                
+                if (newVol > 0) {
+                    lastNonZero = newVol;
+                }
+                
+                // Update visuals after volume change
+                const finalMuted = yt.isMuted();
+                const finalVol = clamp01((yt.getVolume() || 0) / 100);
+                updateSliderVisuals(sliderEl, finalVol, finalMuted);
+                showHud(player, finalMuted ? 0 : finalVol);
             } else {
+                // Fallback for direct video element
+                const wasMuted = video.muted;
+                
+                if (wasMuted) {
+                    video.muted = false;
+                }
+                
                 video.volume = newVol;
+                
+                if (newVol > 0) {
+                    lastNonZero = newVol;
+                }
+                
                 updateSliderVisuals(sliderEl, newVol, video.muted);
-                updateMuteButtonIcon(newVol, video.muted);
                 showHud(player, video.muted ? 0 : newVol);
             }
+            
             sliderEl._lastNonZeroVolume = lastNonZero;
         };
 
@@ -300,7 +284,6 @@
                     const muted = api ? !!yt.isMuted() : !!video.muted;
                     const vol = api ? clamp01((yt.getVolume() || 0) / 100) : video.volume;
                     updateSliderVisuals(sliderEl, vol, muted);
-                    updateMuteButtonIcon(vol, muted);
                     showHud(player, muted ? 0 : vol);
                 }, 10);
             });
@@ -313,7 +296,6 @@
             const vol = api ? clamp01((yt.getVolume() || 0) / 100) : video.volume;
             if (vol > 0) lastNonZero = vol;
             updateSliderVisuals(sliderEl, vol, muted);
-            updateMuteButtonIcon(vol, muted);
         };
         video.addEventListener('volumechange', onVolumeChange);
 
