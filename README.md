@@ -17,6 +17,9 @@ Features:
 - Works in normal, theater, and fullscreen modes
 
 ## Installation
+### Firefore Addon Store
+
+https://addons.mozilla.org/en-US/firefox/addon/zedify/
 
 ### Firefox
 
@@ -78,3 +81,4 @@ const config = {
 ## License
 
 MIT License - see LICENSE file for details.
+
