@@ -41,7 +41,7 @@ cd zedify
 .\tools\build.ps1
 ```
 
-Output: `build/zedify-1.0.0.zip`
+Output: `build/zedify-1.0.1.zip`
 
 ## Usage
 
@@ -74,6 +74,7 @@ const config = {
 ## License
 
 MIT License - see LICENSE file for details.
+
 
 
 
