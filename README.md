@@ -36,7 +36,7 @@ The extension will now be active on all YouTube pages. (temporary, until next re
 Requirements: PowerShell 5.0+
 
 ```powershell
-git clone https://github.com/yourusername/zedify.git
+git clone https://github.com/ReneDussault/zedify.git
 cd zedify
 .\tools\build.ps1
 ```
@@ -74,6 +74,7 @@ const config = {
 ## License
 
 MIT License - see LICENSE file for details.
+
 
 
 
