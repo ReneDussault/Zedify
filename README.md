@@ -12,14 +12,14 @@ Features:
 - Mouse wheel support: 5% steps (normal), 1% steps (with Shift)
 - Keyboard arrow keys for 1% adjustments
 - Volume percentage HUD display
-- Auto-mute at 0% volume (needs to be fixed)
+- Auto-mute at 0% volume
 - Works in normal, theater, and fullscreen modes
 
 ## Installation
 ### Firefore Addon Store
 
 This is the "permanent" way to install the addon.  
-https://addons.mozilla.org/en-US/firefox/addon/zedify/ (waiting approval)
+https://addons.mozilla.org/en-US/firefox/addon/zedify/
 
 ### Firefox
 
@@ -74,6 +74,7 @@ const config = {
 ## License
 
 MIT License - see LICENSE file for details.
+
 
 
 
